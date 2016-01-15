@@ -12,20 +12,20 @@ import android.view.MenuItem;
 
 import tommy.cg21.Activity.Select;
 import tommy.cg21.Database.PlayerDB;
+import tommy.cg21.Objects.Player;
 
 public class Main extends AppCompatActivity {
+
+    public static PlayerDB playerDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        playerDB = new PlayerDB(getApplicationContext());
 
         //Start main activity, the select-screen.
         final Intent select = new Intent(this, Select.class);
         startActivity(select);
-
-        //Create DB for player-list.
-        final Intent player = new Intent(this, PlayerDB.class);
-        startActivity(player);
     }
 }

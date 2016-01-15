@@ -12,42 +12,83 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 import java.util.ArrayList;
 import java.util.List;
-import tommy.cg21.CallAPI;
+import tommy.cg21.API.GetPlayerData;
 import tommy.cg21.Database.PlayerDB;
+import tommy.cg21.Main;
 import tommy.cg21.Objects.Player;
 import tommy.cg21.R;
 
 
-public class Select extends AppCompatActivity implements View.OnTouchListener {
+public class Select extends AppCompatActivity {
 
-    CallAPI callAPI;
-    ViewFlipper flipper;
+    GetPlayerData callAPI = new GetPlayerData();
+
     EditText username;
     EditText region;
-    PlayerDB playerDB;
     ArrayAdapter<Player> playerAdapter;
     ListView playerListView;
     List<Player> players = new ArrayList<Player>();
+
+    private float lastX;
+    private ViewFlipper flipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
-        playerDB = new PlayerDB(getApplicationContext());
+        playerListView = (ListView) findViewById(R.id.listView);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
-        flipper.setOnTouchListener(this);
 
-        if (playerDB.getUserCount() != 0){
-            players.addAll(playerDB.getAllPlayers());
+        if (Main.playerDB.getUserCount() != 0){
+            players.addAll(Main.playerDB.getAllPlayers());
+            updateList();
         }
-
-        updateList();
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        flipper.showNext();
-        return true;
+    // Using the following method, we will handle all screen swaps.
+    public boolean onTouchEvent(MotionEvent touchevent) {
+        switch (touchevent.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                lastX = touchevent.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                float currentX = touchevent.getX();
+
+                // Handling left to right screen swap.
+                if (lastX < currentX) {
+
+                    // If there aren't any other children, just break.
+                    if (flipper.getDisplayedChild() == 0)
+                        break;
+
+                    // Next screen comes in from left.
+                    flipper.setInAnimation(this, R.anim.slide_in_from_left);
+                    // Current screen goes out from right.
+                    flipper.setOutAnimation(this, R.anim.slide_out_to_right);
+
+                    // Display next screen.
+                    flipper.showNext();
+                }
+
+                // Handling right to left screen swap.
+                if (lastX > currentX) {
+
+                    // If there is a child (to the left), kust break.
+                    if (flipper.getDisplayedChild() == 1)
+                        break;
+
+                    // Next screen comes in from right.
+                    flipper.setInAnimation(this, R.anim.slide_in_from_right);
+                    // Current screen goes out from left.
+                    flipper.setOutAnimation(this, R.anim.slide_out_to_left);
+
+                    // Display previous screen.
+                    flipper.showPrevious();
+                }
+                break;
+        }
+        return false;
     }
 
     private void updateList(){
@@ -75,7 +116,7 @@ public class Select extends AppCompatActivity implements View.OnTouchListener {
 
             Player currentPlayer = players.get(position);
 
-            TextView playerName = (TextView) findViewById(R.id.playerName);
+            TextView playerName = (TextView) view.findViewById(R.id.playerName);
             playerName.setText(currentPlayer.getSummonname());
 
             return view;

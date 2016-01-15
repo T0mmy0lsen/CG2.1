@@ -25,7 +25,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="68dp"
-                android:hint="@string/username" />
+                android:hint="@string/username"
+                android:text="Wonderful Tommy" />
 
             <EditText
                 android:layout_width="200dp"
