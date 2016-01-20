@@ -5,4 +5,9 @@
     <string name="region">region</string>
     <string name="euw">euw</string>
     <string name="add">Add</string>
+    <string name="text">Some text</string>
+    <string name="title_activity_players">Players</string>
+    <string name="close_btn">Close</string>
+    <string name="btn_add">Add</string>
+    <string name="img_list">img</string>
 </resources>
